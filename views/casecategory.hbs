@@ -1,0 +1,163 @@
+<style>
+.btn_add{
+    background : #0A84FF;
+    width: 120px;
+    height: 35px;
+    padding: 7px;
+    border-radius: 8px;
+    outline : none !important;
+    border: 2px solid transparent;
+    color: white;
+    float: right;
+    margin-bottom: 15px;
+    transition: all 0.3s;
+}
+.btn_add:hover{
+    border: 2px solid #0A84FF;
+    background: transparent;
+    color: #0A84FF;
+    cursor: pointer;
+}
+.btn_add i{
+    margin-right: 5px;
+}
+.my_button{
+    background: transparent;
+    outline: none !important;
+    border: none !important;
+    color: red;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+.my_button:hover{
+    cursor : pointer;
+}
+</style>
+<div class="page-container">
+    <div style="margin: 10px;">
+        <button class="btn_add"><i class="fa fa-plus"></i>Add New</button>
+    </div>
+    <div id="dataTable"></div>
+</div>
+<script>
+function delete_category(id){
+    $.ajax({
+        url: '/delete_category',
+        method: 'POST',
+        data: {
+            id: id
+        },
+        success: function(response){
+            if( response == "success"){
+                toastr.success("Category is deleted");
+                $('#dataTable').jqxDataTable('updateBoundData');
+            }
+            else{
+                toastr.error("error occured");
+                console.log(response);
+            }
+        }
+    })
+}
+$(document).ready(function(){
+    $('.li-casecategory').addClass('active');
+    $('.btn_add').on('click', function(event){
+        $.ajax({
+            url: '/add_new_category',
+            method: 'POST',
+            success: function(response){
+                if( response == 'success'){
+                    $('#dataTable').jqxDataTable('updateBoundData');
+                }
+            }
+        });
+    });
+    
+    var source = {
+        dataType: "json",
+        dataFields: [
+            {name: 'id', type: 'number'},
+            {name: 'name', type: 'string'},
+        ],
+        root: 'value',
+        type: 'POST',
+        url: "/get_categorydata",
+    };
+    var dataAdapter = new $.jqx.dataAdapter(source);
+    $('#dataTable').jqxDataTable({
+        width: '100%',
+        source: dataAdapter,
+        altRows: true,
+        editable: true,
+        editSettings: { saveOnPageChange: true, saveOnBlur: true, saveOnSelectionChange: true, cancelOnEsc: true, saveOnEnter: true, editSingleCell: true, editOnDoubleClick: true, editOnF2: true },
+        columns: [
+            {text: 'ID', dataField: 'id', align: 'center', width:'20%', cellsAlign:'center'},
+            {text: 'Category Name', dataField: 'name', align:'center', width: '65%', cellsAlign:'center'},
+            {text: 'Actions', align:'center', cellsAlign:'center',
+                cellsRenderer: function(row, column, value, rowData){
+                    return `<div class="action-block">
+                        <button class="my_button" onclick="delete_category(`+ rowData.id +`)"><i class="fa fa-trash-o"></i></button>
+                    </div>`;
+                }
+            }
+        ]
+    });
+    $("#dataTable").on('cellBeginEdit', function (event) {
+        var args = event.args;
+        // row key
+        var rowKey = args.key;
+        // row's index.
+        var rowIndex = args.index;
+        // row's data.
+        var rowData = args.row;
+        // row's index in the data source.
+        var rowBoundIndex = args.boundIndex;
+        // column's data field.
+        var columnDataField = args.dataField;
+        // column's display field.
+        var columnDisplayField = args.displayField;
+        // cell's value.
+        var value = args.value;
+        
+        console.log(args);
+    });
+    // Cell End Edit
+    $("#dataTable").on('cellEndEdit', function (event) {
+        var args = event.args;
+        // row key
+        var rowKey = args.key;
+        // row's index.
+        var rowIndex = args.index;
+        // row's data.
+        var rowData = args.row;
+        // row's index in the data source.
+        var rowBoundIndex = args.boundIndex;
+        // column's data field.
+        var columnDataField = args.dataField;
+        // column's display field.
+        var columnDisplayField = args.displayField;
+        // cell's value.
+        var value = args.value;
+        
+        console.log(args);
+        $.ajax({
+            url:'/save_edited_category',
+            method:'POST',
+            data: {
+                id: rowData.id,
+                name: rowData.name
+            },
+            success: function(response){
+                if( response == "success"){
+                    toastr.success("Category is changed");
+                    $('#dataTable').jqxDataTable('updateBoundData');
+                }
+                else{
+                    toastr.error("error occured");
+                    console.error(response);
+                }
+            }
+        });
+    });
+});
+</script>

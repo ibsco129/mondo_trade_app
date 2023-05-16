@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>{{title}}</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/jqwidgets/jqwidgets/styles/jqx.base.css" type="text/css" />
+    
+    <script type="text/javascript" src="/jqwidgets/scripts/jquery-1.12.4.min.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqwidgets/jqxcore.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqwidgets/jqxbuttons.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqwidgets/jqxscrollbar.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqwidgets/jqxdata.js"></script>
+    <script type="text/javascript" src="/jqwidgets/jqwidgets/jqxdatatable.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
+    
+    <style>
+      body{
+          margin: 0px;
+          font-family: 'Roboto', sans-serif;
+          height: 100vh;
+      }
+      h1{
+          background : #1A1B30;
+          color: white;
+          margin: 0 !important;
+          padding: 20px;
+          font-size: 24px;
+      }
+      .page-container{
+          padding: 50px;
+          width: 100%;
+          margin: 0 auto;
+      }
+      .title{
+          margin: 20px;
+      }
+      .body-container{
+          display: flex;
+          width: 100%;
+          height: -webkit-fill-available;
+      }
+      .navigation-pane{
+          width: 20%;
+          border: none;
+          background: #2D314E;
+      }
+      .navigation-pane ul{
+          list-style: none;
+          padding: 30px 0;
+      }
+      .navigation-pane ul li{
+          color : #6F87B2;
+          font-size: 16px;
+          letter-spacing: 1px;
+          padding: 15px 0 15px 30px;
+          transition: all 0.3s;
+          display: flex;
+      }
+      .navigation-pane ul li:hover, .navigation-pane ul li.active{
+          color: white;
+          cursor: pointer;
+          background: #3B3F5A
+      }
+      .navigation-pane ul li.active{
+        border-left: 5px solid #0A84FF;
+      }
+      ul li a{
+        text-decoration: none !important;
+        color: #6F87B2;
+        width: 100%;
+      }
+      ul li.active a, ul li:hover a{
+        color: white;
+      }
+      ul li a i{
+        margin-right:5px;
+
+      }
+      .panel-body{
+          width: 100%;
+          display: flex;
+      }
+    </style>
+  </head>
+  <body>
+    <h1 class="title"><i class="fa fa-maxcdn" style="font-size:35px;"></i> ondo APP Dashboard</h1>
+    <div class="body-container">
+      <div class="navigation-pane">
+        <ul>
+          {{!-- <li class="li-trade">
+            <a href="/fe-trade-account"><i class="fa fa-user-o"></i> Trade Account</a>
+          </li> --}}
+          <li class="li-project">
+            <a href="/"><i class="fa fa-pencil-square-o"></i> Project RFQ list</a>
+          </li>
+          <li class="li-brand">
+            <a href="/brand"><i class="fa fa-sort-alpha-asc"></i> Brands</a>
+          </li>
+          <li class="li-pdf">
+            <a href="/file-pdf"><i class="fa fa-exchange"></i> Link PDF, Model files</a>
+          </li>
+          <li class="li-casecategory">
+            <a href="/case-studies-category"><i class="fa fa-ellipsis-h"></i> Case Studies Category</a>
+          </li>
+          <li class="li-caselist">
+            <a href="/case-studies-list"><i class="fa fa-tasks"></i> Case Studies Projects</a>
+          </li>
+        </ul>
+      </div>
+      <div class="panel-body">
+        {{{body}}}
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,249 @@
+<style>
+.jqx-rc-all.jqx-widget.jqx-input-group{
+	float: right !important;
+}
+.actions{
+	display: flex;
+}
+.action_button{
+	margin: auto !important;
+	width: 30px;
+	height: 30px;
+	background: transparent;
+	border: none;
+	outline: none !important;
+	cursor: pointer;
+}
+.fa-upload{
+	color: #0A84FF;
+}
+.fa-trash-o{
+	color: #FF7254
+}
+.fa{
+	font-size: 20px;
+	transition: all 0.3s;
+}
+.fa:hover{
+	font-size: 24px;
+}
+</style>
+<div class="page-container">
+	<div id="dataTable"></div>
+	<form class="file-form" enctype="multipart/form-data" style="display:none;" method="POST">
+		<input type="file" id="fileInput" name="file" style="display:none;">
+		<input type="hidden" name="id" id="product_id">
+	</form>
+</div>
+<script>
+
+	function upload_file(id){
+		$('#fileInput').attr('accept', '.pdf');
+		$('#fileInput').click();
+		$('#fileInput').on('change', function(event){
+			$('#product_id').val(id);
+			var formData = new FormData(document.querySelector('.file-form'));
+			$.ajax({
+				url: '/upload_pdf',
+				data: formData,
+				type: 'POST',
+				contentType: false,
+				processData: false,
+				success: function(response){
+					toastr.success("PDF File is uploaded");
+					$('#dataTable').jqxDataTable('updateBoundData');
+				},
+				error: function( error){
+					console.error('Error', error);
+				}
+			});
+		});
+	}
+
+	function upload_model(id){
+		$('#fileInput').attr('accept', '.obj,.fbx');
+		$('#fileInput').click();
+		$('#fileInput').on('change', function(event){
+			$('#product_id').val(id);
+			var formData = new FormData(document.querySelector('.file-form'));
+			$.ajax({
+				url: '/upload_model',
+				data: formData,
+				type: 'POST',
+				contentType: false,
+				processData: false,
+				success: function(response){
+					toastr.success("Model is uploaded");
+					$('#dataTable').jqxDataTable('updateBoundData');
+				},
+				error: function( error){
+					console.error('Error', error);
+				}
+			});
+		});
+	}
+
+	function delete_file(id, custom_id){
+		$.ajax({
+			url: '/delete_pdf',
+			type: 'POST',
+			data: {
+				id : id,
+				custom_id : custom_id,
+			},
+			success: function(response){
+				toastr.success("PDF File is deleted");
+				$('#dataTable').jqxDataTable('updateBoundData');
+			},
+			error: function(error){
+				console.error('Error', error);
+			}
+		});
+	}
+
+	function delete_model(id, custom_id){
+		$.ajax({
+			url: '/delete_model',
+			type: 'POST',
+			data: {
+				id : id,
+				custom_id : custom_id,
+			},
+			success: function(response){
+				toastr.success("Model File is deleted");
+				$('#dataTable').jqxDataTable('updateBoundData');
+			},
+			error: function(error){
+				console.error('Error', error);
+			}
+		});
+	}
+
+	$(document).ready(function(){
+		$('.li-pdf').addClass('active');
+		
+		$.ajax({
+			url: '/get_total_count',
+			method: 'POST',
+			success: function(success){
+				var source =
+				{
+					dataType: "json",
+					dataFields: [
+						{name: 'id', type: 'number'},
+						{name: 'image', type: 'string'},
+						{name: 'name', type: 'string'},
+						{name: 'file', type: 'string'},
+						{name: 'file_id', type: 'number'},
+						{name: 'model', type: 'string'},
+						{name: 'model_id', type: 'number'},
+					],
+					totalrecords: success,
+					root: 'value',
+					url: "/get_products",
+				};
+				var dataAdapter = new $.jqx.dataAdapter(source);
+				$('#dataTable').jqxDataTable({
+					width: '100%',
+					height: '500px',
+					pageable: true,
+					pagerButtonsCount: 8,
+					filterable: true,
+					filterMode: 'simple',
+					source: dataAdapter,
+					altRows: true,
+					serverProcessing: true,
+					pageSize: 20,
+					autoRowHeight: 'true',
+
+					columns: [
+						{
+							text: 'ID',
+							dataField: 'id',
+							align: 'center',
+							width:'50',
+							cellsAlign:'center'
+						},
+						{
+							text: 'Image',
+							dataField: 'image',
+							width:'150',
+							cellsAlign:'center',
+							align:'center',
+							cellsRenderer: function(row, column, value, rowData){
+								return `<div style="width:100%;height:150px !important;"><img style="width:100%;height:100%;" src="`+ value +`"></div>`;
+							}
+						},
+						{
+							text: 'Name',
+							dataField: 'name',
+							width:'150',
+							cellsAlign:'center',
+							align:'center'
+						},
+						{
+							text: 'PDF file',
+							dataField: 'file',
+							width:'250',
+							align:'center',
+							cellsRenderer: function( row, column, value, rowData){
+								if(value != "" && typeof value != 'undefined'){
+									var arr = value.split("]]");
+									var url = arr[1];
+									var url_arr = url.split("=");
+									return `<a href="`+ url +`">`+ url_arr[1] +`</a>`;
+								}
+								else return "";
+							}
+						},
+						{
+							text: 'Actions',
+							align:'center',
+							cellsAlign:'center',
+							width:'120',
+							cellsRenderer: function(row, column, value, rowData){
+								if( rowData['file'] == ""){
+									return `<div class="actions"><button class="action_button" onclick="upload_file(`+ rowData['id'] +`)"><i class="fa fa-upload"></i></button></div>`;
+								}
+								else{
+									return `<div class="actions"><button class="action_button" onclick="upload_file(`+ rowData['id'] +`)"><i class="fa fa-upload"></i></button><button class="action_button" onclick="delete_file(`+ rowData['id'] +`,`+ rowData['file_id'] +`)"><i class="fa fa-trash-o"></i></button></div>`;
+								}
+							}
+						},
+						{
+							text: '3D Model',
+							dataField: 'model',
+							width:'250',
+							align:'center',
+							cellsAlign: 'center',
+							cellsRenderer: function( row, column, value, rowData){
+								if(value != "" && typeof value != 'undefined'){
+									var arr = value.split("]]");
+									var url = arr[1];
+									var url_arr = url.split("=");
+									return `<a href="`+ url +`">`+ url_arr[1] +`</a>`;
+								}
+								return "";
+							}
+						},
+						{
+							text: 'Actions',
+							align:'center',
+							cellsAlign:'center',
+							cellsRenderer: function(row, column, value, rowData){
+								if( rowData['model'] == ""){
+									return `<div class="actions"><button class="action_button" onclick="upload_model(`+ rowData['id'] +`)"><i class="fa fa-upload"></i></button></div>`;
+								}
+								else{
+									return `<div class="actions"><button class="action_button" onclick="upload_model(`+ rowData['id'] +`)"><i class="fa fa-upload"></i></button><button class="action_button" onclick="delete_model(`+ rowData['id'] +`,`+ rowData['model_id'] +`)"><i class="fa fa-trash-o"></i></button></div>`;
+								}
+							}
+						}
+					]
+				});
+			}
+		});
+		
+	});
+	
+</script>

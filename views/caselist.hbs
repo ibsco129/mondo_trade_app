@@ -1,0 +1,377 @@
+<style>
+.my_button{
+    background: transparent;
+    outline: none !important;
+    border: none !important;
+    color: red;
+    font-size: 15px;
+    transition: all 0.3s;
+}
+.my_button:hover{
+    cursor : pointer;
+}
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+		height: 100vh;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+	}
+	.modal::-webkit-scrollbar{
+		width: 0px;
+		background: transparent;
+	}
+
+	.modal-content {
+		background-color: #fefefe;
+		margin: auto auto;
+		padding: 40px;
+		border: 1px solid #888;
+		width: 60%;
+		border-radius: 15px;
+		height: fit-content;
+	}
+	.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+		position: absolute;
+		right: -15px;
+		top: -20px;
+	}
+
+	.close:hover,
+	.close:focus {
+		color: black;
+		text-decoration: none;
+		cursor: pointer;
+	}
+	.inline-block{
+		display: inline-block;
+		width: 100%;
+		margin: 10px 0px;
+	}
+	.block-left label, .block-right label{
+		width: inherit;
+		margin: auto;
+	}
+	.block-left{
+		width: 49%;
+		float : left;
+		display: flex;
+	}
+	.block-right{
+		width: 49%;
+		float: right;
+		display: flex;
+	}
+	.block-full{
+		width: 100%;
+		display: grid;
+	}
+	.m_input{
+		height: 32px;
+		font-size: 14px;
+		border-radius: 6px;
+		background: #f0f0f0;
+		color: black;
+		border : none !important;
+		outline: none !important;
+		margin-top: 5px;
+		width: 100%;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+    .m_select{
+        height: 32px;
+        font-size: 14px;
+        border-radius: 6px;
+		background: #f0f0f0;
+		color: black;
+		border : none !important;
+		outline: none !important;
+		margin-top: 5px;
+		width: 100%;
+		padding-left: 10px;
+		padding-right: 10px;
+    }
+    .m_textarea{
+		font-size: 14px;
+		border-radius: 6px;
+		background: #f0f0f0;
+		color: black;
+		border : none !important;
+		outline: none !important;
+		margin-top: 15px;
+		padding: 15px;
+        min-height: 200px;
+    }
+    .modal-header{
+		display: flex;
+		width: 100%;
+		position:relative;
+	}
+    .modal-body{
+        margin-top: 15px;
+    }
+    .btn_cancel{
+        width: 120px;
+        height:35px;
+        background : transparent;
+        border: 2px solid grey ;
+        outline : none !important;
+        cursor: pointer;
+        border-radius: 7px;
+        float: right;
+        margin: 0 15px;
+        transition: all 0.3s;
+    }
+    .btn_cancel:hover{
+        color: lightgrey;
+        border: 2px solid lightgrey;
+    }
+    .btn_save{
+        width: 150px;
+        height: 35px;
+        background: #6BBD49;
+        color: white;
+        cursor: pointer;
+        border: 2px solid transparent !important;
+        outline: none !important;
+        border-radius: 7px;
+        transition: all 0.3s;
+        float:right;
+    }
+    .btn_save:hover{
+        background: #7CCE5A;
+    }
+    .btn_add{
+        background : #0A84FF;
+        width: 120px;
+        height: 35px;
+        padding: 7px;
+        border-radius: 8px;
+        outline : none !important;
+        border: 2px solid transparent;
+        color: white;
+        float: right;
+        margin-bottom: 15px;
+        transition: all 0.3s;
+    }
+    .btn_add:hover{
+        border: 2px solid #0A84FF;
+        background: transparent;
+        color: #0A84FF;
+        cursor: pointer;
+    }
+    .btn_add i{
+        margin-right: 5px;
+    }
+</style>
+<div class="page-container">
+    <div style="margin: 10px;">
+        <button class="btn_add"><i class="fa fa-plus"></i>Add New</button>
+    </div>
+    <div id="dataTable"></div>
+</div>
+<div id="modal" class="modal">
+	<div class="modal-content">
+		<div class="modal-header">
+			<span class="close">X</span>
+		</div>
+		<form class="modal-body modal_form" >
+			<div class="inline-block">
+				<div class="block-left">
+					<label>Name</label>
+					<input id="m_name" name="m_name" type="text" class="m_input" required>
+				</div>
+				<div class="block-right">
+					<label>Category</label>
+                    <select id="m_category" name="m_category" class="m_select">
+                        
+                    </select>
+				</div>
+			</div>
+			<div class="inline-block">
+				<div class="block-left">
+					<label>Attachment</label>
+                    <input type="file" class="m_input" id="m_image" name="m_image" accept=".jpg,.jpeg,.png">
+				</div>
+                <div class="block-right">
+                    <img src="" alt="Project Image" id="m_image_src" style="width:100%;">
+                </div>
+			</div>
+			<div class="inline-block">
+				<div class="block-full">
+					<label>Project Description</label>
+					<textarea id="m_detail" name="m_detail" class="m_textarea"></textarea>
+				</div>
+			</div>
+			<div class="inline-block">
+                <div class="block-full" style="display: block;">
+                    <button type="button" class="btn_save">Save changes</button>
+                    <button type="button" onclick="cancel_data()" class="btn_cancel">Cancel</button>
+                </div>
+            </div>
+		</form>
+	</div>
+<script>
+document.getElementsByClassName("close")[0].addEventListener("click", function() {
+    document.getElementById("modal").style.display = "none";
+});
+</script>
+</div>
+<script>
+function cancel_data(){
+    document.getElementById("modal").style.display = "none";
+}
+
+
+$('.btn_add').on('click', function(event){
+    $('.btn_save').html("Add Project");
+    $('.btn_save').attr("action_type", "new");
+    $('#m_name').val("");
+    $('#m_image_src').attr("src", "");
+    $('#m_image_src').attr("alt", "");
+    $('#m_detail').html("");
+    document.getElementById("modal").style.display = "flex";
+
+});
+
+$(document).ready(function(){
+    $('.li-caselist').addClass('active');
+    $('.btn_save').on('click', function(event){
+        console.log('123');
+        const action_type = $('.btn_save').attr('action_type');
+        if( action_type == "new"){
+            var formData = new FormData(document.querySelector('.modal_form'));
+            $.ajax({
+                url: '/add_case_project',
+                method: 'POST',
+                data: formData,
+                success: function(response){
+                    if( response == 'success'){
+                        toastr.success("Project Added");
+                    }
+                    else{
+                        toastr.error("Error Occured");
+                        console.log(response);
+                    }
+                }
+            });
+        }
+        else if( action_type == 'update'){
+            var formData = new FormData(document.querySelector('.modal_form'));
+            formData['id'] = $('.btn_save').attr("update_id");
+            $.ajax({
+                url: '/update_case_project',
+                method: 'POST',
+                data: formData,
+                success: function(response){
+                    if( response == 'success'){
+                        toastr.success("Project Updated");
+                    }
+                    else{
+                        toastr.error("Error Occured");
+                        console.log(response);
+                    }
+                }
+            });
+        }
+
+    });
+    $('#m_image').on('change', function(event){
+        // const file = $(this).files[0];
+        const file = $(this)[0]['files'][0];
+        const reader = new FileReader();
+        reader.onload = function(event){
+            $('#m_image_src')[0].src = event.target.result;
+        }
+        reader.readAsDataURL(file);
+        // $('#m_image_src').attr('src', file);
+    });
+    $.ajax({
+        url: '/get_case_categories',
+        method: 'POST',
+        success: function(response){
+            var temp_html = ``;
+            for(var i = 0 ; i < response.length ; i++){
+                temp_html = temp_html + `<option value=`+ response[i]['id'] +`>`+ response[i]['name'] +`</option>`;
+            }
+            $('#m_category').html(temp_html);
+        }
+    });
+    var source = {
+        dataType: "json",
+        dataFields: [
+            {name: 'id', type: 'number'},
+            {name: 'name', type: 'string'},
+            {name: 'category', type: 'string'},
+            {name: 'category_id', type: 'number'},
+            {name: 'images', type: 'string'},
+            {name: 'details', type: 'string'},
+        ],
+        root: 'value',
+        type: 'POST',
+        url: "/get_caselist",
+    };
+    var dataAdapter = new $.jqx.dataAdapter(source);
+    $('#dataTable').jqxDataTable({
+        width: '100%',
+        pageable: true,
+        pagerButtonsCount: 8,
+        source: dataAdapter,
+        altRows: true,
+        pageSize: 10,
+        columns: [
+            {text: 'ID', dataField: 'id', align: 'center', width:'50', cellsAlign:'center'},
+            {text: 'Image', dataField: 'image', align:'center', width: '150',height: '150', cellsAlign:'center',
+                cellsRenderer: function(row, column, value, rowData){
+                    return `<div class="image_div"><img src="`+ value +`" alt="`+ rowData.name +`"></div>`;
+                }
+            },
+            {text:'Project Name', dataField:'name', align:'center', width:'180', cellsAlign:'center'},
+            {text:'Category', dataField:'category', align:'center', width:'120', cellsAlign:'center'},
+            {text:'Details', dataField:'details', align:'center', width:'300', cellsAlign: 'center'},
+            {text: 'Actions', align:'center', cellsAlign:'center',
+                cellsRenderer: function(row, column, value, rowData){
+                    return `<div class="action-block">
+                        <button class="my_button" onclick="delete_project(`+ rowData.id +`)"><i class="fa fa-trash-o"></i></button>
+                    </div>`;
+                }
+            }
+        ]
+    });
+    $('#dataTable').on('rowDoubleClick', function (event){
+        // event args.
+        var args = event.args;
+        // row data.
+        var row = args.row;
+        // row index.
+        var index = args.index;
+        // row's data bound index.
+        var boundIndex = args.boundIndex; 
+        // row key.
+        var key = args.key;
+        // data field
+        var dataField = args.dataField;
+        // original double click event.
+        var clickEvent = args.originalEvent;
+        console.log(row);
+        $('#m_name').val(row.name);
+        $('#m_category').val(row.category_id);
+        $('#m_image_src').attr("src", row.images);
+        $('#m_image_src').attr("alt", row.images);
+        $('#m_detail').html(row.details);
+        $('.btn_save').attr("action_type", "update");
+        $('.btn_save').attr("update_id", row.id);
+        $('.btn_save').html("Save changes");
+        document.getElementById("modal").style.display = "flex";
+    });
+});
+</script>

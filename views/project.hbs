@@ -1,0 +1,441 @@
+<style>
+	.jqx-rc-all.jqx-widget.jqx-input-group{
+		float: right !important;
+	}
+	.table_header{
+		width: 100%;
+		height: 100%;
+		display: flex;
+	}
+	.table_select{
+		margin: auto;
+		width: 80%;
+		height: 28px;
+		padding: 5px;
+		border-radius: 5px;
+	}
+	[class^='span-']{
+		padding: 4px 15px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: normal;
+		color : white;
+		width: 120px !important;
+	}
+	.span-unread{
+		background: #007bff ;
+	}
+	.span-read{
+		background: #6c757d ;
+
+	}
+	.span-accepted{
+		background: #28a745 ;
+	}
+	.span-declined{
+		background: #dc3545 ;
+	}
+	.span-inprogress{
+		background: #ffc107 ;
+		color: black;
+	}
+	.span-delivery{
+		background: #17a2b8;
+	}
+	.span-completed{
+		background: #007e33 ;
+	}
+	.jqx-cell{
+		white-space: nowrap;
+		height: 45px;
+	}
+	.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+		height: 100vh;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+	}
+	.modal::-webkit-scrollbar{
+		width: 0px;
+		background: transparent;
+	}
+
+	.modal-content {
+		background-color: #fefefe;
+		margin: 40px auto;
+		padding: 40px;
+		border: 1px solid #888;
+		width: 80%;
+		border-radius: 15px;
+		height: fit-content;
+	}
+	.close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+		position: absolute;
+		right: -15px;
+		top: -20px;
+	}
+
+	.close:hover,
+	.close:focus {
+		color: black;
+		text-decoration: none;
+		cursor: pointer;
+	}
+	.inline-block{
+		display: inline-block;
+		width: 100%;
+		margin: 10px 0px;
+	}
+	.block-left label, .block-right label{
+		width: inherit;
+		margin: auto;
+	}
+	.block-left{
+		width: 49%;
+		float : left;
+		display: flex;
+	}
+	.block-right{
+		width: 49%;
+		float: right;
+		display: flex;
+	}
+	.block-full{
+		width: 100%;
+		display: grid;
+	}
+	.m_input{
+		height: 32px;
+		font-size: 14px;
+		border-radius: 6px;
+		background: #f0f0f0;
+		color: black;
+		border : none !important;
+		outline: none !important;
+		margin-top: 5px;
+		width: 100%;
+		padding-left: 10px;
+		padding-right: 10px;
+	}
+	.action-buttons{
+		width: 100%;
+		display: flex;
+	}
+	.m_btn, .m_btn:active{
+		color: white;
+		width: 120px;
+		height: 30px;
+		border: none !important;
+		outline : none !important;
+		border-radius: 7px;
+		transition: all 0.3s;
+		margin: auto;
+	}
+	.m_btn:hover{
+		font-size: 16px;
+		cursor : pointer;
+		width: 140px;
+	}
+	.m_description{
+		background: #f0f0f0;
+		border: 1px dashed #ffc107;
+		border-radius: 8px;
+		min-height: 120px;
+		padding: 10px;
+	}
+	.m_href{
+		padding: 10px;
+	}
+	.modal-header{
+		display: flex;
+		width: 100%;
+		position:relative;
+	}
+	.mh_span{
+		position: absolute;
+    padding: 5px 10px;
+    border-radius: 10px;
+    color: white;
+    width: 120px;
+    font-size: 20px;
+    text-align: center;
+    font-weight: bold;
+    font-style: italic;
+    letter-spacing: 2px;
+	}
+	.mh_project{
+		width: 100%;
+		text-align: center;
+	}
+</style>
+<div class="page-container">
+	<div id="dataTable"></div>
+</div>
+<div id="modal" class="modal">
+	<div class="modal-content">
+		<div class="modal-header">
+			<span class="close">X</span>
+			<span id="mh_span" class="mh_span">AAAA</span>
+			<h2 id="mh_project" class="mh_project">Operating System</h2>
+		</div>
+		<div class="modal-body">
+			<div class="inline-block">
+				<div class="block-left">
+					<label>First Name</label>
+					<input id="m_firstname" type="text" class="m_input" readonly>
+				</div>
+				<div class="block-right">
+					<label>Last Name</label>
+					<input id="m_lastname" type="text" class="m_input" readonly>
+				</div>
+			</div>
+			<div class="inline-block">
+				<div class="block-left">
+					<label>Email</label>
+					<input id="m_email" type="text" class="m_input" readonly>
+				</div>
+				<div class="block-right">
+					<label>Phone Number</label>
+					<input id="m_phone" type="text" class="m_input" readonly>
+				</div>
+			</div>
+			<div class="inline-block">
+				<div class="block-left">
+					<label>Country</label>
+					<input id="m_country" type="text" class="m_input" readonly>
+				</div>
+				<div class="block-right">
+					<label>Location</label>
+					<input id="m_location" type="text" class="m_input" readonly>
+				</div>
+			</div>
+			<div class="inline-block">
+				<div class="block-left">
+					<label>Company</label>
+					<input id="m_company" type="text" class="m_input" readonly>
+				</div>
+				<div class="block-right">
+					<label>Company URL</label>
+					<input id="m_company_url" type="text" class="m_input" readonly>
+				</div>
+			</div>
+			<div class="inline-block">
+				<div class="block-left">
+					<label>Project Name</label>
+					<input id="m_project_name" type="text" class="m_input" readonly>
+				</div>
+				<div class="block-right">
+					<label>Project Location</label>
+					<input id="m_project_location" type="text" class="m_input" readonly>
+				</div>
+			</div>
+			<div class="inline-block">
+				<div class="block-full">
+					<label>Attachment</label>
+					<a href="" id="m_file" class="m_href">asdfasfasdfasdfsdf</a>
+				</div>
+			</div>
+			<div class="inline-block">
+				<div class="block-full">
+					<label>Project Description</label>
+					<p id="m_message" class="m_description">
+						AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA<br>
+						BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB<br>
+						CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC<br>
+						DDDDDDDDDDDDDDDDDDDDDDDDDDDDDDDD<br>
+					</p>
+				</div>
+			</div>
+			<div class="inline-block">
+				<div class="action-buttons">
+					<input type="hidden" id="project_id">
+					<button p_type="unread" id="m_unread" class="m_btn span-unread">unread</button>
+					<button p_type="read" id="m_read" class="m_btn span-read">read</button>
+					<button p_type="accepted" id="m_accepted" class="m_btn span-accepted">accepted</button>
+					<button p_type="declined" id="m_declined" class="m_btn span-declined">declined</button>
+					<button p_type="inprogress" id="m_inprogress" class="m_btn span-inprogress">In Progress</button>
+					<button p_type="delivery" id="m_delivery" class="m_btn span-delivery">Delivery</button>
+					<button p_type="completed" id="m_completed" class="m_btn span-completed">Completed</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script>
+		
+		document.getElementsByClassName("close")[0].addEventListener("click", function() {
+				document.getElementById("modal").style.display = "none";
+		});
+
+		// window.addEventListener("click", function(event) {
+		// 		if (event.target == document.getElementById("modal")) {
+		// 				document.getElementById("modal").style.display = "none";
+		// 		}
+		// });
+	</script>
+</div>
+<script type="text/javascript">
+	$(document).ready(function(){
+		$('.li-project').addClass('active');
+		$.ajax({
+			url: '/get_project_rfq_count',
+			method: 'POST',
+			success: function(response){
+				var source =
+				{
+					dataType: "json",
+					dataFields: [
+						{name: 'id', type: 'number'},
+						{name: 'firstname', type: 'string'},
+						{name: 'lastname', type: 'string'},
+						{name: 'email', type: 'string'},
+						{name: 'phone_number', type: 'string'},
+						{name: 'country', type: 'string'},
+						{name: 'location', type: 'string'},
+						{name: 'company', type: 'string'},
+						{name: 'company_url', type: 'string'},
+						{name: 'project_name', type: 'string'},
+						{name: 'project_location', type: 'string'},
+						{name: 'file', type: 'string'},
+						{name: 'message', type: 'string'},
+						{name: 'project_status', type: 'string'},
+						{name: 'wishlist', type: 'number'},
+						{name: 'date_created', type: 'string'},
+						{name: 'date_updated', type: 'string'},
+					],
+					data: {
+						project_status: 'all',
+					},
+					totalrecords: response,
+					root: 'value',
+					url: "/get_project_rfq_list",
+				};
+				var dataAdapter = new $.jqx.dataAdapter(source);
+				$('#dataTable').jqxDataTable({
+					width: '100%',
+					height: '80vh',
+					pageable: true,
+					pagerButtonsCount: 8,
+					sortable: false,
+					source: dataAdapter,
+					altRows: true,
+					columnsResize: true,
+					serverProcessing: true,
+					pageSize: 20,
+					columns: [
+						{text: 'Status', dataField: 'project_status', width: '150', align: 'center', cellsAlign: 'center',
+							renderer: function(text, align, height){
+								var status = source.data.project_status;
+								var select = `
+									<div class="table_header">
+										<select class="table_select">
+											<option value="all">show all</option>
+											<option value="unread">unread</option>
+											<option value="read">read</option>
+											<option value="accepted">accepted</option>
+											<option value="declined">declined</option>
+											<option value="inprogress">in progress</option>
+											<option value="delivery">delivery</option>
+											<option value="completed">completed</option>
+										</select>
+									</div>`;
+									return select;
+							},
+							rendered: function(element, align, height){
+								var status = source.data.project_status;
+								element[0]['children'][0].value = status;
+								element.on('change', function(event){
+									console.log(element[0]['children'][0].value);
+									source.data.project_status = element[0]['children'][0].value;
+									$('#dataTable').jqxDataTable('updateBoundData');
+								});
+								return true;
+							},
+							cellsRenderer: function(row, column, value, rowData){
+								var span_box = `<div class="table-span"><span class="span-`+ value +`">`+ value +`</span></div>`;
+								return span_box;
+							}
+						},
+						{text: 'ID', dataField: 'id', align: 'center', width:'50', cellsAlign:'center'},
+						{text: 'First Name', dataField: 'firstname', width:'120', cellsAlign:'center', align:'center'},
+						{text: 'Last Name', dataField: 'lastname', width:'120', cellsAlign:'center', align:'center'},
+						{text: 'Email', dataField: 'email', width:'150', align: 'center', cellsAlign: 'center'},
+						{text: 'Phone Number', dataField: 'phone_number', width:'120', align: 'center', cellsAlign: 'center'},
+						{text: 'Country', dataField: 'country', width:'120', align: 'center', cellsAlign: 'center'},
+						{text: 'Location', dataField: 'location',width:'200', align: 'center', cellsAlign: 'center'},
+						{text: 'Company', dataField: 'company', width:'120', align: 'center', cellsAlign: 'center' },
+						{text: 'Company Url', dataField: 'company_url', width:'150', align: 'center', cellsAlign: 'center'},
+						{text: 'Project Name', dataField: 'project_name', width:'120', align: 'center', cellsAlign: 'center' },
+						{text: 'Project Location', dataField: 'project_location', width:'120', align: 'center', cellsAlign: 'center' },
+						{text: 'Attachment', dataField: 'file', width:'150', align: 'center', cellsAlign: 'center'},
+						{text: 'Description', dataField: 'message', width:'250'},
+						{text: 'Submitted At', dataField: 'date_created', width:'120', align: 'center', cellsAlign: 'center'},
+						
+					]
+				});
+			}
+		});
+		$('#dataTable').on('rowDoubleClick', function (event){
+					// event args.
+					var args = event.args;
+					// row data.
+					var row = args.row;
+					// row index.
+					var index = args.index;
+					// row's data bound index.
+					var boundIndex = args.boundIndex; 
+					// row key.
+					var key = args.key;
+					// data field
+					var dataField = args.dataField;
+					// original double click event.
+					var clickEvent = args.originalEvent;
+					document.getElementById("modal").style.display = "flex";
+					$('#m_firstname').val(row.firstname);
+					$('#m_lastname').val(row.lastname);
+					$('#m_email').val(row.email);
+					$('#m_phone').val(row.phone_number);
+					$('#m_country').val(row.country);
+					$('#m_company').val(row.company);
+					$('#m_company_url').val(row.company_url);
+					$('#m_location').val(row.location);
+					$('#m_project_name').val(row.project_name);
+					$('#m_project_location').val(row.project_location);
+					$('#m_file').attr('href', row.file);
+					$('#m_file').html(row.file);
+					$('#m_message').html(row.message);
+					$('.m_btn').show();
+					$('#m_'+row.project_status).hide();
+					$('#mh_span').html(row.project_status);
+					$('#mh_span').removeClass();
+					$('#mh_span').addClass('mh_span');
+					$('#mh_span').addClass('span-'+ row.project_status);
+					$('#mh_project').html(row.project_name);
+					$('#project_id').val(row.id);
+		});
+	});
+	$('.m_btn').on('click', function(event){
+		var status = $(this).attr('p_type');
+		$.ajax({
+			url: '/set_project_status',
+			method: 'POST',
+			data: {
+				project_status: status,
+				id: $('#project_id').val(),
+			},
+			success: function(success){
+				toastr.success("Action applied");
+				$('.close').click();
+				$('#dataTable').jqxDataTable('updateBoundData');
+			}
+		});
+	});
+</script>

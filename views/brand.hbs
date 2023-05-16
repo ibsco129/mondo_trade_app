@@ -1,0 +1,96 @@
+<style>
+    .fa-eye{
+        transition: all 0.3s;
+        font-size: 20px;
+        color : #F15100;
+    }
+    .fa-eye-slash{
+        transition: all 0.3s;
+        font-size: 20px;
+        color: grey;
+    }
+    .page-container{
+        width: 80%;
+    }
+    .brand_button{
+        width: 30px;
+        height: 30px;
+        background: transparent;
+        border: none !important;
+        outline : none !important;
+        margin: auto;
+        cursor: pointer;
+        
+    }
+    .brand_button:hover .fa-eye, .brand_button:hover .fa-eye-slash{
+        font-size: 24px;
+    }
+</style>
+<div class="page-container">
+    <div id="dataTable"></div>
+</div>
+<script >
+    
+    
+    function simple_data(id){
+        $.ajax({
+            url: '/update_brand',
+            method: 'POST',
+            data: {
+                id: id
+            },
+            success: function(response){
+                if( response == "success"){
+                    toastr.success("Action is applied");
+                    $('#dataTable').jqxDataTable('updateBoundData');
+                }
+            }
+        });
+    }
+    
+    $(document).ready(function(){
+        $('.li-brand').addClass('active');
+        $.ajax({
+            url: '/get_totalbrand',
+            method: 'POST',
+            success: function(success){
+                var source = {
+                    dataType: "json",
+                    dataFields: [
+                        {name: 'id', type: 'number'},
+                        {name: 'brand_id', type: 'number'},
+                        {name: 'name', type: 'string'},
+                        {name: 'url', type: 'string'},
+                        {name: 'visibility', type: 'number'},
+                    ],
+                    totalrecords: success,
+                    root: 'value',
+                    url: "/get_branddata",
+                };
+                var dataAdapter = new $.jqx.dataAdapter(source);
+                $('#dataTable').jqxDataTable({
+                    width: '100%',
+                    pageable: true,
+                    source: dataAdapter,
+                    altRows: true,
+                    //columnsResize: true,
+                    pagerButtonsCount: 8,
+                    columns: [
+                        {text: 'ID', dataField: 'id', align: 'center', width:'50', cellsAlign:'center'},
+                        {text: 'Brand ID',  dataField: 'brand_id', width:'120', cellsAlign:'center', align:'center'},
+                        {text: 'Brand Name', dataField: 'name', width:'120', cellsAlign:'center', align:'center'},
+                        {text: 'Brand URL', dataField: 'url',width:'200', align:'center', cellsAlign:'left'},
+                        { text: 'Show in Footer', dataField: 'visibility', align:'center',
+                            cellsRenderer: function( row, column, value, rowData){
+                                if( value == 1 )
+                                    return `<div style="display:flex;"><button class="brand_button" onclick="simple_data(`+ rowData['id'] +`)"><i class="fa fa-eye"></i></button></div>`;
+                                else
+                                    return `<div style="display:flex;"><button class="brand_button" onclick="simple_data(`+ rowData['id'] +`)"><i class="fa fa-eye-slash"></i></button></div>`;
+                            }
+                        }
+                    ]
+                });
+            }
+        }); 
+    });
+</script>
